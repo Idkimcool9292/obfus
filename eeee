@@ -46,6 +46,8 @@ pause
 @echo off
 echo Loading Bootstrapper.
 :loop
-echo .
-timeout /t 1 >nul
+echo Updating
+echo Downloading Dependencies
+echo Succesfully downloaded all required files.
 goto loop
+exit
